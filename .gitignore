@@ -1,0 +1,22 @@
+# Virtual Environment
+venv/
+.venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.ipynb_checkpoints
+
+# Data files (GitHub එකට ලොකු data files push නොකරයි)
+data/raw/*.csv
+data/processed/*.csv
+
+# Trained models & artifacts
+models/*.joblib
+models/*.pkl
+
+# OS specific
+.DS_Store
+Thumbs.db
