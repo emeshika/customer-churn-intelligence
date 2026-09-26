@@ -27,13 +27,13 @@ def load_and_validate_data(file_path: Path) -> pd.DataFrame:
     missing_cols = set(EXPECTED_COLUMNS) - set(df.columns)
     if missing_cols:
         raise ValueError(f"Schema mismatch! Missing expected columns: {missing_cols}")
-    print("✓ Schema validation passed: All expected columns are present.")
+    print("Schema validation passed: All expected columns are present.")
 
     # 2. Check Primary Key / Uniqueness
     duplicate_ids = df['customerID'].duplicated().sum()
     if duplicate_ids > 0:
         raise ValueError(f"Data integrity error: Found {duplicate_ids} duplicate customerIDs.")
-    print("✓ Uniqueness check passed: No duplicate customerIDs found.")
+    print("Uniqueness check passed: No duplicate customerIDs found.")
 
     # 3. Check Known Data Anomaly (Whitespace in TotalCharges)
     whitespace_count = (df['TotalCharges'].astype(str).str.strip() == '').sum()
