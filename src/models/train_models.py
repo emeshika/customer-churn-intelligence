@@ -1,10 +1,11 @@
 """
 Advanced Modeling & Hyperparameter Tuning Module
 Trains Random Forest and XGBoost with imbalance handling, compares against baseline,
-and persists the best performing model.
+persists the best performing model, and exports model_metrics.json.
 """
 
 from pathlib import Path
+import json
 import pandas as pd
 import numpy as np
 import joblib
@@ -20,16 +21,17 @@ from sklearn.metrics import (
 
 def evaluate_predictions(y_true, y_pred, y_proba):
     return {
-        "Accuracy": accuracy_score(y_true, y_pred),
-        "Precision": precision_score(y_true, y_pred),
-        "Recall": recall_score(y_true, y_pred),
-        "F1-Score": f1_score(y_true, y_pred),
-        "ROC-AUC": roc_auc_score(y_true, y_proba),
-        "PR-AUC": average_precision_score(y_true, y_proba)
+        "Accuracy": float(accuracy_score(y_true, y_pred)),
+        "Precision": float(precision_score(y_true, y_pred)),
+        "Recall": float(recall_score(y_true, y_pred)),
+        "F1-Score": float(f1_score(y_true, y_pred)),
+        "ROC-AUC": float(roc_auc_score(y_true, y_proba)),
+        "PR-AUC": float(average_precision_score(y_true, y_proba))
     }
 
-def train_and_tune(data_dir: Path, models_dir: Path):
+def train_and_tune(data_dir: Path, models_dir: Path, reports_dir: Path):
     models_dir.mkdir(parents=True, exist_ok=True)
+    reports_dir.mkdir(parents=True, exist_ok=True)
     
     # 1. Load Data
     X_train = pd.read_csv(data_dir / "X_train.csv")
@@ -90,7 +92,6 @@ def train_and_tune(data_dir: Path, models_dir: Path):
     best_xgb = xgb_search.best_estimator_
 
     # 4. Evaluate on Test Set
-    # Load Baseline for direct comparison
     baseline = joblib.load(models_dir / "baseline_logreg.joblib")
     results['Baseline Logistic Regression'] = evaluate_predictions(
         y_test, baseline.predict(X_test), baseline.predict_proba(X_test)[:, 1]
@@ -118,7 +119,19 @@ def train_and_tune(data_dir: Path, models_dir: Path):
     joblib.dump(selected_model, models_dir / "best_model.joblib")
     print(f"Best model saved to: {models_dir / 'best_model.joblib'}")
 
+    # --- 6. Save Metrics to reports/model_metrics.json ---
+    metrics_output_path = reports_dir / "model_metrics.json"
+    metrics_payload = {
+        "selected_model": best_model_name,
+        "models_benchmark": results
+    }
+    with open(metrics_output_path, "w") as f:
+        json.dump(metrics_payload, f, indent=4)
+    print(f"Model metrics successfully exported to: {metrics_output_path}")
+
 if __name__ == "__main__":
     data_directory = Path("data/processed")
     models_directory = Path("models")
-    train_and_tune(data_directory, models_directory)
+    reports_directory = Path("reports")
+    
+    train_and_tune(data_directory, models_directory, reports_directory)

@@ -1,0 +1,29 @@
+{
+    "selected_model": "Tuned Random Forest",
+    "models_benchmark": {
+        "Baseline Logistic Regression": {
+            "Accuracy": 0.7998580553584103,
+            "Precision": 0.6564625850340136,
+            "Recall": 0.516042780748663,
+            "F1-Score": 0.5778443113772455,
+            "ROC-AUC": 0.8425895786509597,
+            "PR-AUC": 0.6371610425887131
+        },
+        "Tuned Random Forest": {
+            "Accuracy": 0.7636621717530163,
+            "Precision": 0.5381750465549349,
+            "Recall": 0.7727272727272727,
+            "F1-Score": 0.6344676180021954,
+            "ROC-AUC": 0.8466067322844816,
+            "PR-AUC": 0.656387696520766
+        },
+        "Tuned XGBoost": {
+            "Accuracy": 0.7381121362668559,
+            "Precision": 0.5042735042735043,
+            "Recall": 0.7887700534759359,
+            "F1-Score": 0.6152241918665277,
+            "ROC-AUC": 0.8446653233098247,
+            "PR-AUC": 0.6622359066897985
+        }
+    }
+}
